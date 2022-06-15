@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <script src="https://unpkg.com/gojs@2.2.11/release/go.js"></script>
+    <div id="allSampleContent" class="p-4 w-full">
+      <script id="code">
+        function init() {
+          const $ = go.GraphObject.make;
+          myDiagram = $(go.Diagram, "myDiagramDiv", {
+            minScale: 1,
+            grid: $(
+              go.Panel,
+              "Grid",
+              $(go.Shape, "LineH", { stroke: "gray", strokeWidth: 0.5 }),
+              $(go.Shape, "LineH", {
+                stroke: "darkslategray",
+                strokeWidth: 1.5,
+                interval: 10,
+              }),
+              $(go.Shape, "LineV", { stroke: "gray", strokeWidth: 0.5 }),
+              $(go.Shape, "LineV", {
+                stroke: "darkslategray",
+                strokeWidth: 1.5,
+                interval: 10,
+              })
+            ),
+            "draggingTool.isGridSnapEnabled": true,
+            "undoManager.isEnabled": true,
+          });
+          myDiagram.nodeTemplate = $(
+            go.Node,
+            "Auto",
+            $(
+              go.Shape,
+              "RoundedRectangle",
+              { strokeWidth: 0 },
+              new go.Binding("fill", "color")
+            ),
+            $(go.TextBlock, { margin: 8 }, new go.Binding("text", "key"))
+          );
+
+          myDiagram.model = new go.GraphLinksModel(
+            [
+              { key: "Alpha", color: "lightblue" },
+              { key: "Beta", color: "orange" },
+              { key: "Gamma", color: "lightgreen" },
+              { key: "Delta", color: "pink" },
+            ],
+            [
+              { from: "Alpha", to: "Beta" },
+              { from: "Alpha", to: "Gamma" },
+              { from: "Beta", to: "Beta" },
+              { from: "Gamma", to: "Delta" },
+              { from: "Delta", to: "Alpha" },
+            ]
+          );
+
+          function positionfunc(diagram, pos) {
+            var size = diagram.grid.gridCellSize;
+            return new go.Point(
+              Math.round(pos.x / size.width) * size.width,
+              Math.round(pos.y / size.height) * size.height
+            );
+          }
+
+          function scalefunc(diagram, scale) {
+            var oldscale = diagram.scale;
+            if (scale > oldscale) {
+              return oldscale + 0.25;
+            } else if (scale < oldscale) {
+              return oldscale - 0.25;
+            }
+            return oldscale;
+          }
+
+          var infscroll = document.getElementById("infscroll");
+          infscroll.addEventListener("change", (e) => {
+            myDiagram.startTransaction("change scroll mode");
+            myDiagram.scrollMode = infscroll.checked
+              ? go.Diagram.InfiniteScroll
+              : go.Diagram.DocumentScroll;
+            myDiagram.commitTransaction("change scroll mode");
+          });
+        }
+        window.addEventListener("DOMContentLoaded", init);
+      </script>
+      <p>
+        <label
+          ><input id="infscroll" type="checkbox" />Enable Infinite
+          Scrolling</label
+        >
+      </p>
+
+      <div id="sample">
+        <div
+          id="myDiagramDiv"
+          style="
+            border: 1px solid black;
+            width: 100%;
+            height: 1000px;
+            position: relative;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+          "
+        >
+          <canvas
+            tabindex="0"
+            width="497"
+            height="497"
+            style="
+              position: absolute;
+              top: 0px;
+              left: 0px;
+              z-index: 2;
+              user-select: none;
+              touch-action: none;
+              width: 398px;
+              height: 398px;
+            "
+            >This text is displayed if your browser does not support the Canvas
+            HTML element.</canvas
+          >
+          <div
+            style="
+              position: absolute;
+              overflow: auto;
+              width: 398px;
+              height: 398px;
+              z-index: 1;
+            "
+          >
+            <div style="position: absolute; width: 1px; height: 1px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

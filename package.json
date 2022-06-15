@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "dependencies": {
+    "gojs": "^2.2.11",
+    "gojs-react": "^1.1.1",
+    "react": "^18.1.0"
+  }
+}
