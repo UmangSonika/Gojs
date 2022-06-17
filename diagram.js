@@ -59,6 +59,12 @@ diagram = (function(){
 			}, 'toggle ' + layername);
 		};
 
+		diagram.grid.visible = true;
+          diagram.toolManager.draggingTool.isGridSnapEnabled = true;
+          diagram.toolManager.draggingTool.gridSnapCellSize = new go.Size(50, 50);
 	}
+
+	
+
 	return { initDiagram };
 })();
